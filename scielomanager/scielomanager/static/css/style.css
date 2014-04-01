@@ -331,3 +331,7 @@ table._listings h4 {
     margin-right: 10px
 }
 .current_attempt { border: 2px solid #CCCCCC;}
+
+.pager > li {
+    margin: 0 5px;
+}
