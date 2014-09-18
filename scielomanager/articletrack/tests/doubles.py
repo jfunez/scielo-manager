@@ -3,7 +3,7 @@ from os import path
 from articletrack.balaio import BalaioAPI, BalaioRPC
 from django.conf import settings
 from urllib2 import urlopen
-from packtools import stylechecker
+import packtools
 
 
 def make_expected_generator(file_uri):
@@ -71,7 +71,7 @@ class BalaioAPICallOKDouble(BalaioRPC):
 # packtools.stylechecker double
 
 
-class StylecheckerDouble(stylechecker.XML):
+class StylecheckerDouble(packtools.XMLValidator):
     def __init__(self, file):
         pass
 

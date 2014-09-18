@@ -281,7 +281,7 @@ class CheckinDetailTests(WebTest, mocker.MockerTestCase):
         self.mocker.result(BalaioTest())
 
         # MOCK/REPLACE/FAKE/PIMP MY STYLECHECKER!!!
-        XML = self.mocker.replace('packtools.stylechecker.XML')
+        XML = self.mocker.replace('packtools.XMLValidator')
         XML(mocker.ANY)
         self.mocker.result(doubles.StylecheckerDouble(mocker.ANY))
 
@@ -338,6 +338,7 @@ class CheckinDetailTests(WebTest, mocker.MockerTestCase):
         self._addWaffleFlag()
         notice = self._makeOne()
 
+        import pdb; pdb.set_trace()
         target_xml = "with_style_errors.xml"
         expected_response = {
             "filename": "1415-4757-gmb-37-0210.xml",
@@ -352,7 +353,7 @@ class CheckinDetailTests(WebTest, mocker.MockerTestCase):
         balaio()
         self.mocker.result(BalaioTest())
 
-        XML = self.mocker.replace('packtools.stylechecker.XML')
+        XML = self.mocker.replace('packtools.XMLValidator')
         XML(mocker.ANY)
         self.mocker.result(doubles.StylecheckerAnnotationsDouble(mocker.ANY))
 
@@ -404,7 +405,7 @@ class CheckinDetailTests(WebTest, mocker.MockerTestCase):
         balaio()
         self.mocker.result(BalaioTest())
 
-        XML = self.mocker.replace('packtools.stylechecker.XML')
+        XML = self.mocker.replace('packtools.XMLValidator')
         XML(expected_response['uri'])
         self.mocker.throw(IOError)
         self.mocker.replay()
@@ -449,7 +450,7 @@ class CheckinDetailTests(WebTest, mocker.MockerTestCase):
             'code': 77,
         }
 
-        XML = self.mocker.replace('packtools.stylechecker.XML')
+        XML = self.mocker.replace('packtools.XMLValidator')
         XML(expected_response['uri'])
         self.mocker.throw(
             lxml.etree.XMLSyntaxError(

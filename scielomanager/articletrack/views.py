@@ -18,8 +18,6 @@ from django.http import HttpResponseBadRequest
 from django.template.defaultfilters import slugify
 from django.contrib.sites.models import get_current_site
 
-from packtools import stylechecker
-
 from scielomanager.tools import get_paginated, get_referer_view
 from scielomanager import tasks
 from . import models

@@ -2,7 +2,7 @@
 import logging
 import lxml
 import pkg_resources
-from packtools import stylechecker
+import packtools
 
 logger = logging.getLogger(__name__)
 
@@ -12,6 +12,7 @@ except DistributionNotFound:
     PACKTOOLS_VERSION = None
 
 
+# ----- COMECO-APAGAR
 class ErrorCollection(object):
 
     def __init__(self):
@@ -103,7 +104,7 @@ class StyleCheckerAnalyzer(object):
             raise ValueError("Can't analyze, target is None or empty")
         self.target_input = target_input
         try:
-            self._target_data = stylechecker.XML(self.target_input)
+            self._target_data = packtools.XMLValidator(self.target_input)
             self._can_be_analyzed = (True, "")
         except lxml.etree.XMLSyntaxError as e:
             self._target_data = e
@@ -150,8 +151,9 @@ class StyleCheckerAnalyzer(object):
                 results['can_be_analyzed'] = (True, None)
             else:
                 if not vs_status or not v_status:  # have errors
-                    self._target_data.annotate_errors()
-                    self._annotations = str(self._target_data)
+                    err_xml = self._target_data.annotate_errors()
+                    self._annotations = lxml.etree.tostring(err_xml, pretty_print=True,
+                            encoding='utf-8', xml_declaration=True)
                 if not vs_status:
                     self._error_collection.add_list_of_errors(vs_errors)
                 if not v_status:
@@ -163,3 +165,62 @@ class StyleCheckerAnalyzer(object):
         results['annotations'] = self._annotations
         results['validation_errors'] = self.get_validation_errors()
         return results
+# ----- FIM-APAGAR
+
+def count(target, collection, key):
+    """Total target count on collection.
+
+    :param key: callable to get the comparison value
+    """
+    occurences = sum([1 for item in collection if key(item) == key(target)])
+    return occurences
+
+
+def make_error_filter(key):
+    """Filtering function factory
+
+    :param key: callable to get the filtering value
+    """
+    known_errors = set()
+    def err_filter(err):
+        _err = key(err)
+
+        is_known = _err in known_errors
+        if is_known == False:
+            known_errors.add(_err)
+
+        return not is_known
+    return err_filter
+
+
+def analyze_xml(file):
+    """Analyzes `file` against packtools' XMLValidator.
+    """
+    result = err = None
+
+    try:
+        xml = packtools.XMLValidator(file)
+
+    except (lxml.etree.XMLSyntaxError, IOError, ValueError) as e:
+        err = e
+
+    else:
+        status, errors = xml.validate_all()
+
+        if not status:
+            err_xml = lxml.etree.tostring(xml.annotate_errors(),
+                    pretty_print=True, encoding='utf-8', xml_declaration=True)
+
+            err_list = ((error, count(error, errors, lambda x: x.message)) for error in errors)
+
+            err_filter = make_error_filter(lambda x: x[0].message)
+            unique_err_list = filter(err_filter, err_list)
+
+            result = {
+                'annotations': err_xml,
+                'validation_errors': unique_err_list,
+                'meta': xml.meta,
+            }
+
+    return result, err
+
