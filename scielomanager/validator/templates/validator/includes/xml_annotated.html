@@ -8,19 +8,22 @@
 {% endassets %}
 
 {% if xml_data.meta %}
-  <dl>
-    <dt>{% trans "Article title" %}</dt>
-    <dd>{{ xml_data.meta.article_title }}</dd>
-  
-    <dt>{% trans "Journal title" %}</dt>
-    <dd>{{ xml_data.meta.journal_title }}</dd>
-  
-    <dt>{% trans "Issue volume" %}</dt>
-    <dd>{{ xml_data.meta.issue_volume }}</dd>
-  
-    <dt>{% trans "Issue number" %}</dt>
-    <dd>{{ xml_data.meta.issue_number }}</dd>
-  </dl>
+  <h4>{% trans "XML Meta" %}:</h4>
+  <div class="well well-small">
+    <dl class="dl-horizontal">
+      <dt>{% trans "Article title" %}</dt>
+      <dd>{{ xml_data.meta.article_title }}</dd>
+
+      <dt>{% trans "Journal title" %}</dt>
+      <dd>{{ xml_data.meta.journal_title }}</dd>
+
+      <dt>{% trans "Issue volume" %}</dt>
+      <dd>{{ xml_data.meta.issue_volume }}</dd>
+
+      <dt>{% trans "Issue number" %}</dt>
+      <dd>{{ xml_data.meta.issue_number }}</dd>
+    </dl>
+  </div>
 {% endif %}
 
 {%if xml_exception  %}
@@ -29,6 +32,7 @@
     <p>{% trans "Detail:"%} <strong>{{ xml_exception }}</strong></p>
   </div>
 {% else %}
+  <h4>{% trans "XML validation output" %}:</h4>
   {% if xml_data.validation_errors %}
     <table id="validation_errors_table" class="table table-striped table-hover table-condensed">
       <thead>

@@ -8,12 +8,6 @@ from . import forms
 from . import utils
 
 
-def __prepare_and_analyze(data_input):
-    """ Normalize input to feed the stylechecker and obtain results """
-    analyzer = utils.StyleCheckerAnalyzer(data_input)
-    return analyzer.analyze()
-
-
 @waffle_flag('packtools_validator')
 def packtools_home(request, template_name='validator/packtools.html'):
     context = {
