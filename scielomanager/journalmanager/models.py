@@ -583,6 +583,8 @@ class Journal(models.Model):
     is_indexed_ssci = models.BooleanField(_('SSCI'), default=False)
     is_indexed_aehci = models.BooleanField(_('A&HCI'), default=False)
 
+    jid = models.CharField(max_length=32, unique=True, editable=False)
+
     def __unicode__(self):
         return self.title
 
@@ -591,6 +593,11 @@ class Journal(models.Model):
         permissions = (("list_journal", "Can list Journals"),
                        ("list_editor_journal", "Can list editor Journal"),
                        ("change_editor", "Can change editor of the journal"))
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.jid = str(uuid4().hex)
+        super(Journal, self).save(*args, **kwargs)
 
     def get_last_issue(self):
         """
@@ -916,6 +923,8 @@ class Issue(models.Model):
     suppl_text = models.CharField(_('Suppl Text'),  max_length=15, null=True, blank=True)
     spe_text = models.CharField(_('Special Text'),  max_length=15, null=True, blank=True)
 
+    iid = models.CharField(max_length=32, unique=True, editable=False)
+
     class Meta:
         ordering = ('created', 'id')
         permissions = (("list_issue", "Can list Issues"), )
@@ -1044,6 +1053,7 @@ class Issue(models.Model):
 
         if not self.pk:
             self.order = self._suggest_order()
+            self.iid = str(uuid4().hex)
         else:
             # the ordering control is based on publication year attr.
             # if an issue is moved between pub years, the order must be reset.

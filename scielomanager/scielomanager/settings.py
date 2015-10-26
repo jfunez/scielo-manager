@@ -220,7 +220,7 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'level': 'NOTSET',
+            'level': 'ERROR',
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
