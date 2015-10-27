@@ -7,7 +7,7 @@ from pprint import pprint
 import config
 from ijournal import IJournal, journal_to_ijournal
 from iissue import IIssue, issue_to_iissue
-from iarticle import IArticle
+from iarticle import IArticle, article_to_iarticle
 
 # DJANGO IMPORTS
 from django.core.management import setup_environ
@@ -28,15 +28,13 @@ setup_environ(settings)
 
 from journalmanager.models import Journal, Issue, Article
 
-
-
 # Define a default Elasticsearch client
 connections.create_connection(hosts=config.ES_HOSTS)
 
 # create the mappings in elasticsearch
 IJournal.init()
 IIssue.init()
-# Article.init()
+IArticle.init()
 
 # create and save and journal
 # journal = Journal(_id=1,
@@ -77,6 +75,9 @@ for issue in Issue.objects.all():
     else:
         print 'saving issue', issue.id, 'parent: ', iissue.meta.parent
 
+for article in Article.objects.all():
+    iarticle = IArticle(**article_to_iarticle(article))
+    iarticle.save()
 
 # s = Search(index=config.INDEX).query("match", title="saúde")
 # response = s.execute()
