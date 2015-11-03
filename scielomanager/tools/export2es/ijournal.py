@@ -5,8 +5,6 @@ from elasticsearch_dsl import DocType, String, Date, Integer, Nested, MetaField
 
 import config
 
-# Erro no cadastro do status
-
 
 def journal_to_ijournal(model_instance):
     journal_collections = []
@@ -80,6 +78,11 @@ def journal_to_ijournal(model_instance):
     if model_instance.is_indexed_aehci:
         list_of_indexes.append('A&HCI')
 
+    list_of_sponsor = []
+    if model_instance.sponsor.all():
+        for sponsor in model_instance.sponsor.all():
+            list_of_sponsor.append(sponsor.name)
+
     result = {
         '_id': model_instance.jid,
         'jid': model_instance.jid,
@@ -120,7 +123,8 @@ def journal_to_ijournal(model_instance):
         'publisher_telephone': None,  # TODO: FIX it!
         'current_status': journal_current_status,
         'mission': journal_missions,
-        'index_at': list_of_indexes
+        'index_at': list_of_indexes,
+        'sponsors': list_of_sponsor
     }
     return result
 
@@ -174,6 +178,7 @@ class IJournal(DocType):
     mission = Nested(properties={'description': String(index='not_analyzed'),
                                  'language': String(index='not_analyzed')})
     index_at = String(index='not_analyzed')
+    sponsors = String(index='not_analyzed')
 
     class Meta:
         index = config.INDEX

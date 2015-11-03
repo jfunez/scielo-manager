@@ -40,18 +40,18 @@ for journal in Journal.objects.all():
     print 'saving journal', journal.id
     ijournal.save()
 
-for issue in Issue.objects.all():
-    try:
-        iissue = IIssue(**issue_to_iissue(issue))
-        iissue.save()
-    except Exception, e:
-        print e.message, 'FOR ISSUE: ', issue.pk, e.message
-        continue
-    else:
-        print 'saving issue', issue.id
+# for issue in Issue.objects.all():
+#     try:
+#         iissue = IIssue(**issue_to_iissue(issue))
+#         iissue.save()
+#     except Exception, e:
+#         print e.message, 'FOR ISSUE: ', issue.pk, e.message
+#         continue
+#     else:
+#         print 'saving issue', issue.id
 
-for article in Article.objects.filter(journal__isnull=False, issue__isnull=False):
-    iarticle = IArticle(**article_to_iarticle(article))
-    iarticle.save()
+# for article in Article.objects.filter(journal__isnull=False, issue__isnull=False):
+#     iarticle = IArticle(**article_to_iarticle(article))
+#     iarticle.save()
 
-    print "Article issue iid: %s" % iarticle.issue_iid
+#     print "Article issue iid: %s" % iarticle.issue_iid
