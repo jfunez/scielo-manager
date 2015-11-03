@@ -5,6 +5,8 @@ from elasticsearch_dsl import DocType, String, Date, Integer, Nested, MetaField
 
 import config
 
+# Erro no cadastro do status
+
 
 def journal_to_ijournal(model_instance):
     journal_collections = []
@@ -70,6 +72,14 @@ def journal_to_ijournal(model_instance):
             'description': mission.description,
         })
 
+    list_of_indexes = []
+    if model_instance.is_indexed_scie:
+        list_of_indexes.append('SCIE')
+    if model_instance.is_indexed_ssci:
+        list_of_indexes.append('SSCI')
+    if model_instance.is_indexed_aehci:
+        list_of_indexes.append('A&HCI')
+
     result = {
         '_id': model_instance.jid,
         'jid': model_instance.jid,
@@ -110,6 +120,7 @@ def journal_to_ijournal(model_instance):
         'publisher_telephone': None,  # TODO: FIX it!
         'current_status': journal_current_status,
         'mission': journal_missions,
+        'index_at': list_of_indexes
     }
     return result
 
@@ -130,7 +141,7 @@ class IJournal(DocType):
     study_areas = String(index='not_analyzed')
     social_networks = Nested(properties={'network': String(index='not_analyzed'),
                                          'account': String(index='not_analyzed')})
-    title = String()
+    title = String(index='not_analyzed')
     title_iso = String()
     short_title = String()
     created = Date()
@@ -162,6 +173,7 @@ class IJournal(DocType):
     current_status = String(index='not_analyzed')
     mission = Nested(properties={'description': String(index='not_analyzed'),
                                  'language': String(index='not_analyzed')})
+    index_at = String(index='not_analyzed')
 
     class Meta:
         index = config.INDEX

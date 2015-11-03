@@ -33,10 +33,15 @@ def issue_to_iissue(model_instance):
     if model_instance.cover:
         issue_cover_url = model_instance.cover.url
 
+    if model_instance.journal:
+        journal_jid = model_instance.journal.jid
+    else:
+        journal_jid = None
+
     result = {
-        '_parent': model_instance.journal.jid,
         '_id': model_instance.iid,
         'iid': model_instance.iid,
+        'journal_jid': journal_jid,
         'sections': issue_sections,
         'volume': model_instance.volume,
         'number': model_instance.number,
@@ -57,6 +62,7 @@ def issue_to_iissue(model_instance):
 class IIssue(DocType):
 
     iid = String(index="not_analyzed")
+    journal_jid = String(index="not_analyzed")
     sections = Nested(properties={'order': Integer(index='not_analyzed'),
                                   'subjects': Nested(properties={
                                     "name": String(index='not_analyzed'),
@@ -79,6 +85,5 @@ class IIssue(DocType):
 
     class Meta:
         index = config.INDEX
-        parent = MetaField(type='journal')
         dynamic = MetaField('strict')
         doc_type = 'issue'
