@@ -63,7 +63,7 @@ def journal_to_ijournal(model_instance):
 
     journal_current_status = None
     if model_instance.statuses.all():
-        journal_current_status = model_instance.statuses.all().order_by('since')[0].status
+        journal_current_status = model_instance.statuses.all().order_by('-since')[0].status
 
     journal_missions = []
     for mission in model_instance.missions.all():
