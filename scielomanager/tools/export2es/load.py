@@ -35,10 +35,10 @@ IJournal.init()
 IIssue.init()
 IArticle.init()
 
-for journal in Journal.objects.all():
-    ijournal = IJournal(**journal_to_ijournal(journal))
-    print 'saving journal', journal.id
-    ijournal.save()
+# for journal in Journal.objects.all():
+#     ijournal = IJournal(**journal_to_ijournal(journal))
+#     print 'saving journal', journal.id
+#     ijournal.save()
 
 # for issue in Issue.objects.all():
 #     try:
@@ -50,8 +50,8 @@ for journal in Journal.objects.all():
 #     else:
 #         print 'saving issue', issue.id
 
-# for article in Article.objects.filter(journal__isnull=False, issue__isnull=False):
-#     iarticle = IArticle(**article_to_iarticle(article))
-#     iarticle.save()
+for article in Article.objects.filter(journal__isnull=False, issue__isnull=False):
+    iarticle = IArticle(**article_to_iarticle(article))
+    iarticle.save()
 
-#     print "Article issue iid: %s" % iarticle.issue_iid
+    print "Article issue iid: %s" % iarticle.issue_iid
