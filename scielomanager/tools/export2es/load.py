@@ -31,27 +31,30 @@ from journalmanager.models import Journal, Issue, Article
 # Define a default Elasticsearch client
 connections.create_connection(hosts=config.ES_HOSTS)
 
-IJournal.init()
+# IJournal.init()
 IIssue.init()
-IArticle.init()
+# IArticle.init()
 
 # for journal in Journal.objects.all():
 #     ijournal = IJournal(**journal_to_ijournal(journal))
-#     print 'saving journal', journal.id
 #     ijournal.save()
 
-# for issue in Issue.objects.all():
-#     try:
-#         iissue = IIssue(**issue_to_iissue(issue))
-#         iissue.save()
-#     except Exception, e:
-#         print e.message, 'FOR ISSUE: ', issue.pk, e.message
-#         continue
-#     else:
-#         print 'saving issue', issue.id
+#     print 'Save journal: ', journal.id
 
-for article in Article.objects.filter(journal__isnull=False, issue__isnull=False):
-    iarticle = IArticle(**article_to_iarticle(article))
-    iarticle.save()
+for issue in Issue.objects.all():
+    try:
+        iissue = IIssue(**issue_to_iissue(issue))
+        iissue.save()
+        print 'Save issue: ', issue.id
+    except Exception, e:
+        print e.message, 'FOR ISSUE: ', issue.pk, e.message
+        continue
+    else:
+        print 'Save issue: ', issue.id
 
-    print "Article issue iid: %s" % iarticle.issue_iid
+# for article in Article.objects.filter(journal__isnull=False, issue__isnull=False):
+#     iarticle = IArticle(**article_to_iarticle(article))
+
+#     iarticle.save()
+
+#     print "Save article:", iarticle.aid

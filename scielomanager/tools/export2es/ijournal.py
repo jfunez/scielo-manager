@@ -6,6 +6,19 @@ from elasticsearch_dsl import DocType, String, Date, Integer, Nested, MetaField
 import config
 
 
+def get_section_titles(section):
+    """
+    Get all title for a section
+    """
+
+    titles = []
+    for section in section.all():
+        for title in section.titles.all():
+            titles.append(title.title)
+
+    return titles
+
+
 def journal_to_ijournal(model_instance):
     journal_collections = []
     for collection in model_instance.collections.all():
@@ -83,6 +96,25 @@ def journal_to_ijournal(model_instance):
         for sponsor in model_instance.sponsor.all():
             list_of_sponsor.append(sponsor.name)
 
+    issue = model_instance.get_last_issue()
+
+    if issue:
+
+        last_issue = {'volume': issue.volume,
+                      'number': issue.number,
+                      'year': issue.publication_year,
+                      'start_month': issue.publication_start_month,
+                      'end_month': issue.publication_end_month,
+                      'label': issue.label,
+                      'sections': get_section_titles(issue.section),
+                      'iid': issue.iid,
+                      'cover_url': issue.conver.path if issue.cover else None,
+                      'bibliographic_legend': issue.bibliographic_legend}
+    else:
+        last_issue = None
+
+    issue_count = model_instance.issue_set.all().count()
+
     result = {
         '_id': model_instance.jid,
         'jid': model_instance.jid,
@@ -124,7 +156,9 @@ def journal_to_ijournal(model_instance):
         'current_status': journal_current_status,
         'mission': journal_missions,
         'index_at': list_of_indexes,
-        'sponsors': list_of_sponsor
+        'sponsors': list_of_sponsor,
+        'last_issue': last_issue,
+        'issue_count': issue_count
     }
     return result
 
@@ -179,6 +213,18 @@ class IJournal(DocType):
                                  'language': String(index='not_analyzed')})
     index_at = String(index='not_analyzed')
     sponsors = String(index='not_analyzed')
+    issue_count = String(index='not_analyzed')
+    last_issue = Nested(properties={'volume': String(index='not_analyzed'),
+                                    'number': String(index='not_analyzed'),
+                                    'year': String(index='not_analyzed'),
+                                    'label': String(index='not_analyzed'),
+                                    'start_month': String(index='not_analyzed'),
+                                    'end_month': String(index='not_analyzed'),
+                                    'sections': String(index='not_analyzed'),
+                                    'cover_url': String(index='not_analyzed'),
+                                    'iid': String(index='not_analyzed'),
+                                    'bibliographic_legend': String(index='not_analyzed')
+                                    })
 
     class Meta:
         index = config.INDEX

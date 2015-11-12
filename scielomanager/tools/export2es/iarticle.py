@@ -31,9 +31,27 @@ def article_to_iarticle(model_instance):
     else:
         journal_jid = None
 
+    journal_study_areas = [sa.study_area for sa in model_instance.journal.study_areas.all()]
+
+    journal = {
+            'title': model_instance.journal.title,
+            'publisher_name': model_instance.journal.publisher_name,
+            'scielo_issn': model_instance.journal.scielo_issn,
+            'print_issn': model_instance.journal.print_issn,
+            'eletronic_issn': model_instance.journal.eletronic_issn,
+            'study_areas': journal_study_areas
+            }
+
+    issue = {
+        'year': model_instance.issue.publication_year,
+        'volume': model_instance.issue.volume,
+        'number': model_instance.issue.number
+    }
+
     result = {
         '_id': model_instance.aid,
         'aid': model_instance.aid,
+        'is_aop': model_instance.is_aop,
         'issue_iid': issue_iid,
         'journal_jid': journal_jid,
         'created': model_instance.created_at,
@@ -42,6 +60,8 @@ def article_to_iarticle(model_instance):
         'section': model_instance.get_value(model_instance.XPaths.HEAD_SUBJECT),
         'htmls': htmls,
         'domain_key': model_instance.domain_key,
+        'journal': journal,
+        'issue': issue
     }
     return result
 
@@ -53,10 +73,20 @@ class IArticle(DocType):
     journal_jid = String(index="not_analyzed")
     title = String(index="not_analyzed")
     section = String(index="not_analyzed")
+    is_aop = String(index="not_analyzed")
     created = Date()
     updated = Date()
     htmls = Nested(properties={'language': String(index='not_analyzed'),
                                'source': String(index='no')})
+    journal = Nested(properties={'title': String(index='not_analyzed'),
+                                 'publisher_name': String(index='not_analyzed'),
+                                 'scielo_issn': String(index='not_analyzed'),
+                                 'print_issn': String(index='not_analyzed'),
+                                 'eletronic_issn': String(index='not_analyzed'),
+                                 'study_areas': String(index='not_analyzed')})
+    issue = Nested(properties={'year': String(index='not_analyzed'),
+                               'volume': String(index='not_analyzed'),
+                               'number': String(index='not_analyzed')})
     domain_key = String(index="not_analyzed")
 
     class Meta:

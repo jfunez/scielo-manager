@@ -39,6 +39,9 @@ def issue_to_iissue(model_instance):
         journal_jid = None
 
     result = {
+        'type': model_instance.type,
+        'suppl_text': model_instance.suppl_text,
+        'spe_text': model_instance.spe_text,
         '_id': model_instance.iid,
         'iid': model_instance.iid,
         'journal_jid': journal_jid,
@@ -72,6 +75,9 @@ class IIssue(DocType):
     number = String(index="not_analyzed")
     created = Date()
     updated = Date()
+    type = String(index="not_analyzed")
+    suppl_text = String(index="not_analyzed")
+    spe_text = String(index="not_analyzed")
     start_month = String(index="not_analyzed")
     end_month = String(index="not_analyzed")
     year = String(index="not_analyzed")
