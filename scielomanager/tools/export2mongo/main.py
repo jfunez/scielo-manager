@@ -28,8 +28,23 @@ from journalmanager.models import Journal, Issue, Article
 connect(config.MONGODB_SETTINGS['name'])
 
 
-for journal in Journal.objects.all():
-    djournal = DJournal(**journal_to_djournal(journal))
-    djournal.save()
+# for journal in Journal.objects.all():
+#     djournal = DJournal(**journal_to_djournal(journal))
+#     djournal.save()
 
-    print 'Save journal: ', journal.id, ' with id: ', djournal.id
+#     print 'Save journal: ', journal.id, ' with id: ', djournal.id
+
+
+for issue in Issue.objects.all():
+    try:
+        iissue = DIssue(**issue_to_dissue(issue))
+        iissue.save()
+        print 'Save issue: ', issue.id
+    except Exception, e:
+        print e.message, 'FOR ISSUE: ', issue.pk, e.message
+        continue
+    else:
+        print 'Save issue: ', issue.id
+
+
+

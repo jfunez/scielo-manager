@@ -1,4 +1,4 @@
 # Constants
 
 INDEX = "iopac3"
-ES_HOSTS = ['127.0.0.1', ]
+ES_HOSTS = ['192.168.169.156', ]

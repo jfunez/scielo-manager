@@ -31,15 +31,15 @@ from journalmanager.models import Journal, Issue, Article
 # Define a default Elasticsearch client
 connections.create_connection(hosts=config.ES_HOSTS)
 
-# IJournal.init()
+IJournal.init()
 IIssue.init()
-# IArticle.init()
+IArticle.init()
 
-# for journal in Journal.objects.all():
-#     ijournal = IJournal(**journal_to_ijournal(journal))
-#     ijournal.save()
+for journal in Journal.objects.all():
+    ijournal = IJournal(**journal_to_ijournal(journal))
+    ijournal.save()
 
-#     print 'Save journal: ', journal.id
+    print 'Save journal: ', journal.id
 
 for issue in Issue.objects.all():
     try:
@@ -52,9 +52,9 @@ for issue in Issue.objects.all():
     else:
         print 'Save issue: ', issue.id
 
-# for article in Article.objects.filter(journal__isnull=False, issue__isnull=False):
-#     iarticle = IArticle(**article_to_iarticle(article))
+for article in Article.objects.filter(journal__isnull=False, issue__isnull=False):
+    iarticle = IArticle(**article_to_iarticle(article))
 
-#     iarticle.save()
+    iarticle.save()
 
-#     print "Save article:", iarticle.aid
+    print "Save article:", iarticle.aid
