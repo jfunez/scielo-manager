@@ -28,11 +28,11 @@ from journalmanager.models import Journal, Issue, Article
 connect(config.MONGODB_SETTINGS['name'])
 
 
-# for journal in Journal.objects.all():
-#     djournal = DJournal(**journal_to_djournal(journal))
-#     djournal.save()
+for journal in Journal.objects.all():
+    djournal = DJournal(**journal_to_djournal(journal))
+    djournal.save()
 
-#     print 'Save journal: ', journal.id, ' with id: ', djournal.id
+    print 'Save journal: ', journal.id, ' with id: ', djournal.id
 
 
 for issue in Issue.objects.all():
@@ -46,5 +46,9 @@ for issue in Issue.objects.all():
     else:
         print 'Save issue: ', issue.id
 
+for article in Article.objects.filter(journal__isnull=False, issue__isnull=False):
+    darticle = DArticle(**article_to_darticle(article))
 
+    darticle.save()
 
+    print "Save article:", darticle.aid
