@@ -25,3 +25,4 @@ django-countries==3.3
 elasticsearch>=1.0.0,<2.0.0
 elasticsearch-dsl==0.0.8
 zerorpc>=0.4.4
+-e git+git@github.com:scieloorg/opac_schema.git#egg=opac_schema
