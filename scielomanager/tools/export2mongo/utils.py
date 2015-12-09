@@ -268,5 +268,6 @@ def article_to_darticle(model_instance):
         "domain_key": model_instance.domain_key,
         # "journal": journal,
         # "issue": issue
+        "xml": str(model_instance.xml),
     }
     return result

@@ -32,14 +32,14 @@ from journalmanager.models import Journal, Issue, Article
 connect(config.MONGODB_SETTINGS['name'])
 
 
-for journal in Journal.objects.all():
+for journal in Journal.objects.filter(collections__acronym__in=['esp', 'spa']):
     djournal = opac_models.Journal(**utils.journal_to_djournal(journal))
     djournal.save()
 
     print 'Save journal: ', journal.id, ' with id: ', djournal.id
 
 
-for issue in Issue.objects.all():
+for issue in Issue.objects.filter(journal__collections__acronym__in=['esp', 'spa']):
     try:
         iissue = opac_models.Issue(**utils.issue_to_dissue(issue))
         iissue.save()
@@ -50,7 +50,7 @@ for issue in Issue.objects.all():
     else:
         print 'Save issue: ', issue.id
 
-for article in Article.objects.filter(journal__isnull=False, issue__isnull=False):
+for article in Article.objects.filter(journal__collections__acronym__in=['esp', 'spa'], issue__isnull=False):
     darticle = opac_models.Article(**utils.article_to_darticle(article))
 
     darticle.save()
