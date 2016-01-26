@@ -18,12 +18,6 @@ def get_section_titles(section):
 
 
 def journal_to_djournal(model_instance):
-    journal_collections = []
-    for collection in model_instance.collections.all():
-        journal_collections.append({
-            'acronym': collection.acronym,
-            'name': collection.name,
-        })
 
     journal_use_licenses = None
     if model_instance.use_license:
@@ -116,7 +110,6 @@ def journal_to_djournal(model_instance):
     result = {
         '_id': model_instance.jid,
         'jid': model_instance.jid,
-        'collections': journal_collections,
         'use_licenses': journal_use_licenses,
         'timeline': journal_timeline,
         'national_code': model_instance.national_code,

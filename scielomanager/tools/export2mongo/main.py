@@ -26,20 +26,35 @@ except ImportError:
 setup_environ(settings)
 
 import utils
-from journalmanager.models import Journal, Issue, Article
+from journalmanager.models import Collection, Journal, Issue, Article
 
 
 connect(config.MONGODB_SETTINGS['name'])
 
 
-for journal in Journal.objects.filter(collections__acronym__in=['esp', 'spa']):
+manager_collection = Collection.objects.get(acronym__iexact='spa')
+collection_data = {
+    '_id': str(manager_collection.pk),
+    'acronym': manager_collection.acronym,
+    'name': manager_collection.name,
+    'logo_url': '',
+    'license_code': 'CC-BY',
+    'sponsors': [],
+}
+
+collection = opac_models.Collection(**collection_data)
+collection.save()
+
+
+for journal in Journal.objects.filter(collections__acronym__iexact='spa'):
     djournal = opac_models.Journal(**utils.journal_to_djournal(journal))
+    djournal.collection = collection
     djournal.save()
 
     print 'Save journal: ', journal.id, ' with id: ', djournal.id
 
 
-for issue in Issue.objects.filter(journal__collections__acronym__in=['esp', 'spa']):
+for issue in Issue.objects.filter(journal__collections__acronym__iexact='spa'):
     try:
         iissue = opac_models.Issue(**utils.issue_to_dissue(issue))
         iissue.save()
@@ -50,7 +65,7 @@ for issue in Issue.objects.filter(journal__collections__acronym__in=['esp', 'spa
     else:
         print 'Save issue: ', issue.id
 
-for article in Article.objects.filter(journal__collections__acronym__in=['esp', 'spa'], issue__isnull=False):
+for article in Article.objects.filter(journal__collections__acronym__iexact='spa', issue__isnull=False):
     darticle = opac_models.Article(**utils.article_to_darticle(article))
 
     darticle.save()
